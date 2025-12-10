@@ -14,3 +14,9 @@ async def cmd_start(message: types.Message):
 @dp.message()
 async def echo(message: types.Message):
     await message.answer(f"Ты написал: {message.text}")
+
+
+@dp.message()
+async def echo(message: types.Message):
+    pass
+    # await message.answer(f"Ты написал: {message.text}")
