@@ -14,8 +14,7 @@ async def webhook():
     return "OK", 200
 
 
-# Установка вебхука при старте
-@app.before_first_request
+@app.before_request
 def setup_webhook():
     loop = asyncio.get_event_loop()
     loop.run_until_complete(bot.set_webhook(config.WEBHOOK_URL))
