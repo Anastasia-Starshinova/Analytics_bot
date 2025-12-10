@@ -2,7 +2,7 @@ from aiogram import Bot, Dispatcher, types
 from aiogram.filters import Command
 import config
 
-bot = Bot(token=config.BOT_TOKEN)
+bot = Bot(token=config.TOKEN)
 dp = Dispatcher()
 
 
