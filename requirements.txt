@@ -1,6 +1,6 @@
 aiogram==3.4.1
 pydantic==2.5.3
-pydantic-core==2.14.6
+pydantic-core==2.14.6 --prefer-binary
 Flask==3.0.3
 gunicorn==23.0.0
 python-dotenv
