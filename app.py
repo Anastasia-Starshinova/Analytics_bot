@@ -1,30 +1,24 @@
-from flask import Flask, request
-import asyncio
+from fastapi import FastAPI, Request
 from bot import bot, dp
 import config
+import asyncio
 
-app = Flask(__name__)
+app = FastAPI()
 
 
-# Запуск вебхука
-@app.route(config.WEBHOOK_PATH, methods=["POST"])
-async def webhook():
-    update = request.json
+@app.on_event("startup")
+async def on_startup():
+    await bot.set_webhook(config.WEBHOOK_URL)
+
+
+@app.post(config.WEBHOOK_PATH)
+async def webhook(request: Request):
+    update = await request.json()
     await dp.feed_webhook_update(bot, update)
-    return "OK", 200
+    return {"status": "ok"}
 
 
-@app.before_request
-def setup_webhook():
-    loop = asyncio.get_event_loop()
-    loop.run_until_complete(bot.set_webhook(config.WEBHOOK_URL))
-
-
-@app.route("/", methods=["GET"])
-def index():
-    return "Bot is running!"
-
-
-if __name__ == "__main__":
-    app.run(port=8080)
+@app.get("/")
+async def index():
+    return {"status": "Bot is running on Railway!"}
 
