@@ -1,12 +1,7 @@
 aiogram==3.4.1
+pydantic==2.5.3
 Flask==3.0.3
 gunicorn==23.0.0
 python-dotenv
 psycopg2-binary
-# pydantic==2.5.3
-# pydantic-core==2.16.3
 
-# aiogram
-# Flask
-# gunicorn
-# python-dotenv
