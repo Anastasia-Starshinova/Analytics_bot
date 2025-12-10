@@ -1,9 +1,9 @@
-# aiogram==3.4.1
-# Flask==3.0.3
-# gunicorn==23.0.0
-# python-dotenv
-
-aiogram
-Flask
-gunicorn
+aiogram==3.4.1
+Flask==3.0.3
+gunicorn==23.0.0
 python-dotenv
+
+# aiogram
+# Flask
+# gunicorn
+# python-dotenv
