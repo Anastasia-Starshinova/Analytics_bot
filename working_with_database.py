@@ -2,13 +2,13 @@ import psycopg2
 import json
 from psycopg2 import sql
 
+keys_videos = ['id', 'creator_id', 'video_created_at', 'views_count', 'likes_count', 'comments_count',
+               'reports_count', 'created_at', 'updated_at']
+keys_video_snapshots = ['id', 'video_id', 'views_count', 'likes_count', 'comments_count', 'reports_count',
+                        'delta_views_count', 'delta_likes_count', 'delta_comments_count', 'delta_reports_count',
+                        'created_at', 'updated_at']
 
-# DATABASE_URL = os.getenv("DATABASE_URL").replace("postgres://", "postgresql://")
 
-# if check_tables(DATABASE_URL, ['videos', 'video_snapshots']) is True:
-#     pass
-# else:
-#     create_tables(DATABASE_URL)
 def check_tables(database_url, tables_list):
     count_of_true = 0
     # try:
@@ -79,61 +79,59 @@ def create_tables(database_url):
         print(len(all_data))
 
         for data in all_data:
-            for key in data:
-                if key == "snapshots":
-                    snapshots_data = data.get("snapshots")
-                    print(f'snapshots_data = {snapshots_data}')
-                else:
-                    print('else:')
-                    print(f'key = {key}')
-                    print(f'data.get("key") = {data.get(key)}')
+            # keys_videos = ['id', 'creator_id', 'video_created_at', 'views_count', 'likes_count', 'comments_count',
+            #                'reports_count', 'created_at', 'updated_at']
+            data_id = data.get('id')
+            creator_id = data.get('creator_id')
+            video_created_at = data.get('video_created_at')
+            views_count = data.get('views_count')
+            likes_count = data.get('likes_count')
+            comments_count = data.get('comments_count')
+            reports_count = data.get('reports_count')
+            created_at = data.get('created_at')
+            updated_at = data.get('updated_at')
 
-        # {"id": "ecd8a4e4-1f24-4b97-a944-35d17078ce7c", "video_created_at": "2025-08-19T08:54:35+00:00",
-            # "snapshots": [
-            #         #         {
-            #         #             "id": "466bb5862d3f47fd85f11ca0dc1e6629",
-            #         #             "video_id": "ecd8a4e4-1f24-4b97-a944-35d17078ce7c",
-            #         #             "views_count": 1461,]}
+            connection = psycopg2.connect(database_url)
+            cursor = connection.cursor()
+            cursor.execute(f'INSERT INTO videos '
+                           f'(id, creator_id, video_created_at, views_count, likes_count,'
+                           f'comments_count, reports_count, created_at,'
+                           f'updated_at) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s)',
+                           (data_id, creator_id, video_created_at, views_count, likes_count, comments_count,
+                            reports_count, created_at, updated_at))
+            connection.commit()
+            connection.close()
 
-        # {
-        #     "id": "ecd8a4e4-1f24-4b97-a944-35d17078ce7c",
-        #     "video_created_at": "2025-08-19T08:54:35+00:00",
-        #     "views_count": 1461,
-        #     "likes_count": 35,
-        #     "reports_count": 0,
-        #     "comments_count": 0,
-        #     "creator_id": "aca1061a9d324ecf8c3fa2bb32d7be63",
-        #     "created_at": "2025-11-26T11:00:08.983295+00:00",
-        #     "updated_at": "2025-12-01T10:00:00.236609+00:00",
-        #     "snapshots": [
-        #         {
-        #             "id": "466bb5862d3f47fd85f11ca0dc1e6629",
-        #             "video_id": "ecd8a4e4-1f24-4b97-a944-35d17078ce7c",
-        #             "views_count": 1461,
-        #             "likes_count": 35,
-        #             "reports_count": 0,
-        #             "comments_count": 0,
-        #             "delta_views_count": 1461,
-        #             "delta_likes_count": 35,
-        #             "delta_reports_count": 0,
-        #             "delta_comments_count": 0,
-        #             "created_at": "2025-11-26T11:00:09.053200+00:00",
-        #             "updated_at": "2025-11-26T11:00:09.053200+00:00"
-        #         },
-        #         {
-        #             "id": "b6765497d60e4eae8d7aebf2fa307bf0",
-        #             "video_id": "ecd8a4e4-1f24-4b97-a944-35d17078ce7c",
-        #             "views_count": 1461,
-        #             "likes_count": 35,
-        #             "reports_count": 0,
-        #             "comments_count": 0,
-        #             "delta_views_count": 0,
-        #             "delta_likes_count": 0,
-        #             "delta_reports_count": 0,
-        #             "delta_comments_count": 0,
-        #             "created_at": "2025-11-26T12:00:09.334212+00:00",
-        #             "updated_at": "2025-11-26T12:00:09.334212+00:00"
-        #         },
+            snapshots_data = data.get("snapshots")
+            print(f'snapshots_data = {snapshots_data}')
+            if snapshots_data:
+                for dict_data in snapshots_data:
+                    snapshots_id = dict_data.get('id')
+                    video_id = dict_data.get('video_id')
+                    views_count = dict_data.get('views_count')
+                    likes_count = dict_data.get('likes_count')
+                    comments_count = dict_data.get('comments_count')
+                    reports_count = dict_data.get('reports_count')
+                    delta_views_count = dict_data.get('delta_views_count')
+                    delta_likes_count = dict_data.get('delta_likes_count')
+                    delta_comments_count = dict_data.get('delta_comments_count')
+                    delta_reports_count = dict_data.get('delta_reports_count')
+                    created_at = dict_data.get('created_at')
+                    updated_at = dict_data.get('updated_at')
+
+                    connection = psycopg2.connect(database_url)
+                    cursor = connection.cursor()
+                    cursor.execute(f'INSERT INTO video_snapshots '
+                                   f'(id, video_id, views_count, likes_count, comments_count,'
+                                   f'reports_count, delta_views_count, delta_likes_count,'
+                                   f'delta_comments_count, delta_reports_count, '
+                                   f'created_at, updated_at) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s,'
+                                   f'%s, %s, %s)', (snapshots_id, video_id, views_count, likes_count,
+                                                    comments_count, reports_count, delta_views_count,
+                                                    delta_likes_count, delta_comments_count, delta_reports_count,
+                                                    created_at, updated_at))
+                    connection.commit()
+                    connection.close()
 
 
 def delete_table(database_url):
