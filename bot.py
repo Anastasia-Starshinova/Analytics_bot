@@ -14,7 +14,7 @@ DATABASE_URL = os.getenv("DATABASE_URL").replace("postgres://", "postgresql://")
 # create_table(DATABASE_URL)
 
 
-delete_table(DATABASE_URL)
+# delete_table(DATABASE_URL)
 
 
 @dp.message(Command("start"))
