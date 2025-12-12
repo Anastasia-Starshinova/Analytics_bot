@@ -78,18 +78,23 @@ def create_tables(database_url):
         print(type(all_data))
         print(len(all_data))
 
-        count = 0
-        count_all = 0
         for data in all_data:
-            count_all += 1
             for key in data:
                 if key == "snapshots":
-                    count += 1
-                    print(key)
+                    snapshots_data = data.get("snapshots")
+                    print(f'snapshots_data = {snapshots_data}')
+                else:
+                    print('else:')
+                    print(f'key = {key}')
+                    print(f'data.get("key") = {data.get(key)}')
 
-        print(count)
-        # 358
-        print(count_all)
+        # {"id": "ecd8a4e4-1f24-4b97-a944-35d17078ce7c", "video_created_at": "2025-08-19T08:54:35+00:00",
+            # "snapshots": [
+            #         #         {
+            #         #             "id": "466bb5862d3f47fd85f11ca0dc1e6629",
+            #         #             "video_id": "ecd8a4e4-1f24-4b97-a944-35d17078ce7c",
+            #         #             "views_count": 1461,]}
+
         # {
         #     "id": "ecd8a4e4-1f24-4b97-a944-35d17078ce7c",
         #     "video_created_at": "2025-08-19T08:54:35+00:00",
