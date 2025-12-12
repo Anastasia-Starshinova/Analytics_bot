@@ -10,7 +10,7 @@ from psycopg2 import sql
 # else:
 #     create_tables(DATABASE_URL)
 def check_tables(database_url, tables_list):
-    results = {}
+    count_of_true = 0
     # try:
     connection = psycopg2.connect(database_url)
     cursor = connection.cursor()
@@ -20,11 +20,12 @@ def check_tables(database_url, tables_list):
         cursor.execute(sql.SQL("""SELECT EXISTS (SELECT FROM information_schema.tables 
         WHERE table_schema = 'public' AND table_name = %s);"""), [table])
         exists = cursor.fetchone()[0]
-        print(f'exists = {exists}')
-        results[table] = exists
-        print(f'results = {results}')
+        if exists is True:
+            count_of_true += 1
 
-    return True
+    if count_of_true == len(tables_list):
+        print('if count_of_true == len(tables_list):')
+        return True
     # except Exception as e:
     #     print("Ошибка при проверке таблиц:", e)
     # finally:
