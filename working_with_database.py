@@ -1,7 +1,39 @@
 import psycopg2
+import json
+from psycopg2 import sql
 
 
 # DATABASE_URL = os.getenv("DATABASE_URL").replace("postgres://", "postgresql://")
+
+# if check_tables(DATABASE_URL, ['videos', 'video_snapshots']) is True:
+#     pass
+# else:
+#     create_tables(DATABASE_URL)
+def check_tables(database_url, tables_list):
+    results = {}
+    # try:
+    connection = psycopg2.connect(database_url)
+    cursor = connection.cursor()
+
+    for table in tables_list:
+        print(f'table = {table}')
+        cursor.execute(sql.SQL("""SELECT EXISTS (SELECT FROM information_schema.tables 
+        WHERE table_schema = 'public' AND table_name = %s);"""), [table])
+        exists = cursor.fetchone()[0]
+        print(f'exists = {exists}')
+        results[table] = exists
+        print(f'results = {results}')
+
+    return True
+    # except Exception as e:
+    #     print("Ошибка при проверке таблиц:", e)
+    # finally:
+    #     if cursor:
+    #         cursor.close()
+    #     if connection:
+    #         connection.close()
+    #
+    # return results
 
 
 def create_tables(database_url):
@@ -38,10 +70,75 @@ def create_tables(database_url):
     connection.commit()
     connection.close()
 
+    with open("videos.json", "r", encoding="utf-8") as file:
+        all_data = json.load(file)
+        all_data = all_data.get('videos')
+
+        print(type(all_data))
+        print(len(all_data))
+
+        count = 0
+        count_all = 0
+        for data in all_data:
+            count_all += 1
+            for key in data:
+                if key == "snapshots":
+                    count += 1
+                    print(key)
+
+        print(count)
+        # 358
+        print(count_all)
+        # {
+        #     "id": "ecd8a4e4-1f24-4b97-a944-35d17078ce7c",
+        #     "video_created_at": "2025-08-19T08:54:35+00:00",
+        #     "views_count": 1461,
+        #     "likes_count": 35,
+        #     "reports_count": 0,
+        #     "comments_count": 0,
+        #     "creator_id": "aca1061a9d324ecf8c3fa2bb32d7be63",
+        #     "created_at": "2025-11-26T11:00:08.983295+00:00",
+        #     "updated_at": "2025-12-01T10:00:00.236609+00:00",
+        #     "snapshots": [
+        #         {
+        #             "id": "466bb5862d3f47fd85f11ca0dc1e6629",
+        #             "video_id": "ecd8a4e4-1f24-4b97-a944-35d17078ce7c",
+        #             "views_count": 1461,
+        #             "likes_count": 35,
+        #             "reports_count": 0,
+        #             "comments_count": 0,
+        #             "delta_views_count": 1461,
+        #             "delta_likes_count": 35,
+        #             "delta_reports_count": 0,
+        #             "delta_comments_count": 0,
+        #             "created_at": "2025-11-26T11:00:09.053200+00:00",
+        #             "updated_at": "2025-11-26T11:00:09.053200+00:00"
+        #         },
+        #         {
+        #             "id": "b6765497d60e4eae8d7aebf2fa307bf0",
+        #             "video_id": "ecd8a4e4-1f24-4b97-a944-35d17078ce7c",
+        #             "views_count": 1461,
+        #             "likes_count": 35,
+        #             "reports_count": 0,
+        #             "comments_count": 0,
+        #             "delta_views_count": 0,
+        #             "delta_likes_count": 0,
+        #             "delta_reports_count": 0,
+        #             "delta_comments_count": 0,
+        #             "created_at": "2025-11-26T12:00:09.334212+00:00",
+        #             "updated_at": "2025-11-26T12:00:09.334212+00:00"
+        #         },
+
 
 def delete_table(database_url):
     connection = psycopg2.connect(database_url)
     cursor = connection.cursor()
-    cursor.execute(f'DROP TABLE IF EXISTS test')
+    cursor.execute(f'DROP TABLE IF EXISTS videos')
+    connection.commit()
+    connection.close()
+
+    connection = psycopg2.connect(database_url)
+    cursor = connection.cursor()
+    cursor.execute(f'DROP TABLE IF EXISTS video_snapshots')
     connection.commit()
     connection.close()
