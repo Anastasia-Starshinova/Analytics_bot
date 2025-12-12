@@ -11,3 +11,11 @@ def create_table(database_url):
     connection.commit()
     connection.close()
 
+
+def delete_table(database_url):
+    connection = psycopg2.connect(database_url)
+    cursor = connection.cursor()
+    cursor.execute(f'DROP TABLE WITH EXISTS test')
+    connection.commit()
+    connection.close()
+
