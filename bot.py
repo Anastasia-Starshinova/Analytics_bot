@@ -2,7 +2,7 @@ import asyncio
 from aiogram import Bot, Dispatcher, types
 from aiogram.filters import Command
 import config
-from working_with_database import create_table, delete_table
+from working_with_database import create_tables, delete_table
 import os
 
 bot = Bot(token=config.TOKEN)
@@ -11,7 +11,7 @@ dp = Dispatcher()
 
 DATABASE_URL = os.getenv("DATABASE_URL").replace("postgres://", "postgresql://")
 
-# create_table(DATABASE_URL)
+create_tables(DATABASE_URL)
 
 
 # delete_table(DATABASE_URL)
