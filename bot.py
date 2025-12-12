@@ -2,9 +2,16 @@ import asyncio
 from aiogram import Bot, Dispatcher, types
 from aiogram.filters import Command
 import config
+from creating_tables import create_table
+import os
 
 bot = Bot(token=config.TOKEN)
 dp = Dispatcher()
+
+
+DATABASE_URL = os.getenv("DATABASE_URL").replace("postgres://", "postgresql://")
+
+create_table(DATABASE_URL)
 
 
 @dp.message(Command("start"))
