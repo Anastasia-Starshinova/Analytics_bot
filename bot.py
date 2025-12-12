@@ -11,14 +11,12 @@ dp = Dispatcher()
 
 DATABASE_URL = os.getenv("DATABASE_URL").replace("postgres://", "postgresql://")
 
-if check_tables(DATABASE_URL, ['videos', 'video_snapshots']) is True:
-    print('РАБОТАЕТ')
-else:
-    pass
-    # create_tables(DATABASE_URL)
+delete_table(DATABASE_URL)
 
-
-# delete_table(DATABASE_URL)
+# if check_tables(DATABASE_URL, ['videos', 'video_snapshots']) is True:
+#     pass
+# else:
+#     create_tables(DATABASE_URL)
 
 
 @dp.message(Command("start"))
