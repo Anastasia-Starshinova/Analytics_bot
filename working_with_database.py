@@ -15,7 +15,7 @@ def create_table(database_url):
 def delete_table(database_url):
     connection = psycopg2.connect(database_url)
     cursor = connection.cursor()
-    cursor.execute(f'DROP TABLE WITH EXISTS test')
+    cursor.execute(f'DROP TABLE IF EXISTS test')
     connection.commit()
     connection.close()
 
