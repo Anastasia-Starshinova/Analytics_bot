@@ -18,7 +18,29 @@ updated_at)
 - video_snapshots (id, video_id, views_count, likes_count, comments_count, reports_count, delta_views_count, 
 delta_likes_count, delta_comments_count, delta_reports_count, created_at, updated_at)
 
-Определи действие пользователя и параметры для запроса к базе.
+Твоя задача — определить действие (action) и параметры (params) для запроса к базе данных.
+
+### Возможные действия (action):
+
+- total_videos  
+- total_snapshots  
+- top_likes  
+- videos_by_creator  
+- views_above_threshold  
+- snapshot_max_views  
+- snapshot_by_video  
+- sum_views_by_date  
+- creator_videos_views_final  
+
+- **negative_view_snapshots**  
+  Используется, когда пользователь спрашивает:
+  - сколько замеров статистики
+  - где просмотры уменьшились
+  - где число просмотров стало меньше по сравнению с предыдущим замером
+  - где delta просмотров отрицательная  
+  ⚠️ ВАЖНО: считается КОЛИЧЕСТВО ЗАМЕРОВ, а не видео.
+
+---
 
 Верни JSON в формате:
 {{
