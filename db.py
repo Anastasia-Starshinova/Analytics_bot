@@ -89,11 +89,12 @@ async def query_database(pool, action: str, params: dict = None):
     elif action == "creator_videos_views_final":
         print('elif action == "creator_videos_views_final":')
         threshold = int(params.get("threshold", 100000))
-        query = """SELECT COUNT(DISTINCT v.creator_id) AS total FROM videos v JOIN video_snapshots 
-        vs ON vs.video_id = v.id GROUP BY v.id, v.creator_id HAVING MAX(vs.views_count) > $1"""
-        result = await pool.fetchrow(query, threshold)
-        return int(result["total"] or 0)
+        creator_id = params.get("creator_id")
+        query = """SELECT COUNT(DISTINCT v.id) AS total FROM videos v JOIN video_snapshots vs ON vs.video_id = v.id 
+        WHERE v.creator_id = $1 GROUP BY v.id HAVING MAX(vs.views_count) > $2"""
 
+        result = await pool.fetchrow(query, creator_id, threshold)
+        return int(result["total"] or 0)
 
     elif action == "negative_view_snapshots":
         print('elif action == "negative_view_snapshots":')
