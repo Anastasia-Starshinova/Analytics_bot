@@ -23,8 +23,9 @@ async def on_startup():
 
 @app.post(config.WEBHOOK_PATH)
 async def webhook(request: Request):
-    update = Update(**await request.json())
-    await dp.process_update(update)
+    data = await request.json()
+    update = Update(**data)
+    await dp.feed_update(update)
     return {"ok": True}
 
 
