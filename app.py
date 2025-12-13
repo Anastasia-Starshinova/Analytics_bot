@@ -4,14 +4,15 @@ from db import get_pool
 from working_with_database import create_tables, check_tables
 import config
 from aiogram.types import Update
+import state
+
 
 app = FastAPI()
 
 
 @app.on_event("startup")
 async def on_startup():
-    db_pool = await get_pool(DATABASE_URL)
-    bot['db_pool'] = db_pool
+    state.db_pool = await get_pool(DATABASE_URL)
 
     if not check_tables(DATABASE_URL, ['videos', 'video_snapshots']):
         create_tables(DATABASE_URL)

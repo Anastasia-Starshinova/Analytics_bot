@@ -5,6 +5,7 @@ import config
 from db import get_pool, get_top_videos
 from openai_client import detect_intent, format_answer
 # import os
+import state
 
 bot = Bot(token=config.TOKEN)
 dp = Dispatcher()
@@ -34,7 +35,7 @@ async def cmd_help(message: types.Message):
 
 @dp.message()
 async def handle_text(message: types.Message):
-    db_pool = message.bot['db_pool']
+    db_pool = state.db_pool
     intent = await detect_intent(message.text)
 
     if intent.get("action") == "top_videos":
