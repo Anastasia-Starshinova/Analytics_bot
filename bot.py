@@ -10,7 +10,6 @@ from openai_client import detect_intent, format_answer
 bot = Bot(token=config.TOKEN)
 dp = Dispatcher()
 
-db_pool = None
 
 DATABASE_URL = config.DATABASE_URL
 
@@ -29,13 +28,14 @@ async def cmd_start(message: types.Message):
 
 
 @dp.message(Command("help"))
-async def cmd_start(message: types.Message):
+async def cmd_help(message: types.Message):
     await message.answer("Привет! Этот бот написан в качестве тестового задания и помогает получить данные из "
                          "базы данных :) Просто спросите то, что вам нужно и бот ответит :)")
 
 
 @dp.message()
 async def handle_text(message: types.Message):
+    db_pool = message.bot['db_pool']
     intent = await detect_intent(message.text)
 
     if intent.get("action") == "top_videos":
