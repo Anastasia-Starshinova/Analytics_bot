@@ -26,6 +26,8 @@ delta_likes_count, delta_comments_count, delta_reports_count, created_at, update
     snapshot_by_video, sum_views_by_date, creator_videos_views_final>",
     "params": {{
         "date": "YYYY-MM-DD",
+        "start_date": "YYYY-MM-DD",
+        "end_date": "YYYY-MM-DD",
         "creator_id": "<id>",
         "video_id": "<id>",
         "threshold": <число>
