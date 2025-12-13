@@ -2,7 +2,7 @@ import asyncio
 from aiogram import Bot, Dispatcher, types
 from aiogram.filters import Command
 import config
-from db import get_pool, get_top_videos
+from db import get_pool, query_database
 from openai_client import detect_intent, format_answer
 # import os
 import state
@@ -37,25 +37,10 @@ async def cmd_help(message: types.Message):
 async def handle_text(message: types.Message):
     db_pool = state.db_pool
     intent = await detect_intent(message.text)
-    print("Message:", message.text)
-    print("Detected intent:", intent)
 
-    if intent.get("action") == "top_videos":
-        rows = await get_top_videos(db_pool, limit=5)
-        answer = await format_answer(rows)
+    action = intent.get("action")
+    params = intent.get("params", {})
 
-        await message.answer(answer)
-    else:
-        await message.answer("Я пока не понял запрос и не знаю, что сказать 👀\nПопробуйте спросить ещё раз :)")
+    number = await query_database(db_pool, action, params)
+    await message.answer(f"{number}")
 
-
-# async def main():
-#     global db_pool
-#     db_pool = await get_pool(config.DATABASE_URL)
-#
-#     print("🤖 Бот запущен и работает")
-#     await dp.start_polling(bot)
-#
-#
-# if __name__ == "__main__":
-#     asyncio.run(main())
