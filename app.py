@@ -22,11 +22,11 @@ async def on_startup():
     print("🤖 Webhook установлен, бот запущен")
 
 
-@app.post(WEBHOOK_PATH)
+@app.post(config.WEBHOOK_PATH)
 async def webhook(request: Request):
     data = await request.json()
     update = Update(**data)
-    await dp.feed_webhook_update(bot, update)
+    await dp.feed_webhook_update(bot, update)  # aiogram 3.x
     return {"ok": True}
 
 

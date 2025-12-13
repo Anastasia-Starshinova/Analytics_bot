@@ -1,11 +1,12 @@
 import openai
 import config
 import json
+import anyio
 
 client = openai.OpenAI(api_key=config.OPENAI_API_KEY)
 
 
-async def detect_intent(text: str) -> dict:
+def detect_intent_sync(text: str) -> dict:
     """
     Определяет intent пользователя и параметры с помощью GPT.
     Возвращает словарь {"action": str, "params": dict}.
@@ -34,7 +35,8 @@ async def detect_intent(text: str) -> dict:
 Пользовательский вопрос: "{text}"
 """
 
-    response = await client.chat.completions.create(
+    # Синхронный вызов
+    response = client.chat.completions.create(
         model="gpt-3.5-turbo",
         messages=[{"role": "user", "content": prompt}],
         temperature=0
@@ -48,4 +50,11 @@ async def detect_intent(text: str) -> dict:
         intent = {"action": "unknown", "params": {}}
 
     return intent
+
+
+# Если используете FastAPI / aiogram и нужно асинхронно:
+
+
+async def detect_intent(text: str) -> dict:
+    return await anyio.to_thread.run_sync(detect_intent_sync, text)
 

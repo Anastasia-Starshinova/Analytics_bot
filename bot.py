@@ -3,9 +3,10 @@ from aiogram import Bot, Dispatcher, types
 from aiogram.filters import Command
 import config
 from db import get_pool, query_database
-from openai_client import detect_intent
+from openai_client import detect_intent, detect_intent_sync
 # import os
 import state
+import anyio
 
 bot = Bot(token=config.TOKEN)
 dp = Dispatcher()
@@ -36,8 +37,7 @@ async def cmd_help(message: types.Message):
 @dp.message()
 async def handle_text(message: types.Message):
     db_pool = state.db_pool
-
-    intent = await detect_intent(message.text)
+    intent = await anyio.to_thread.run_sync(detect_intent_sync, message.text)
 
     print("Message:", message.text)
     print("Intent:", intent)
