@@ -3,13 +3,16 @@ from aiogram import Bot, Dispatcher, types
 from aiogram.filters import Command
 import config
 from working_with_database import create_tables, delete_table, check_tables
-import os
+from db import get_pool, get_top_videos
+from openai_client import detect_intent, format_answer
+# import os
 
 bot = Bot(token=config.TOKEN)
 dp = Dispatcher()
 
+db_pool = None
 
-DATABASE_URL = os.getenv("DATABASE_URL").replace("postgres://", "postgresql://")
+DATABASE_URL = config.DATABASE_URL
 
 # delete_table(DATABASE_URL)
 
@@ -21,7 +24,12 @@ else:
 
 @dp.message(Command("start"))
 async def cmd_start(message: types.Message):
-    await message.answer("Привет! Я работаю на aiogram + Railway 😊")
+    await message.answer(
+        "Привет! 🤖\n"
+        "Спроси меня обычным языком, например:\n"
+        "• Покажи топ видео\n"
+        "• Какие видео самые популярные?"
+    )
 
 
 @dp.message(Command("help"))
@@ -30,8 +38,23 @@ async def cmd_start(message: types.Message):
                          "базы данных :) Просто спросите то, что вам нужно и бот ответит :)")
 
 
+@dp.message()
+async def handle_text(message: types.Message):
+    intent = await detect_intent(message.text)
+
+    if intent.get("action") == "top_videos":
+        rows = await get_top_videos(db_pool, limit=5)
+        answer = await format_answer(rows)
+        await message.answer(answer)
+    else:
+        await message.answer("Я пока не понял запрос 😅")
+
+
 async def main():
-    print("Бот запущен и работает на Railway!")
+    global db_pool
+    db_pool = await get_pool(config.DATABASE_URL)
+
+    print("🤖 Бот запущен и работает")
     await dp.start_polling(bot)
 
 
