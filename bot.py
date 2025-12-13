@@ -37,10 +37,13 @@ async def cmd_help(message: types.Message):
 async def handle_text(message: types.Message):
     db_pool = state.db_pool
     intent = await detect_intent(message.text)
+    print("Message:", message.text)
+    print("Detected intent:", intent)
 
     if intent.get("action") == "top_videos":
         rows = await get_top_videos(db_pool, limit=5)
         answer = await format_answer(rows)
+
         await message.answer(answer)
     else:
         await message.answer("Я пока не понял запрос и не знаю, что сказать 👀\nПопробуйте спросить ещё раз :)")
