@@ -16,11 +16,6 @@ DATABASE_URL = config.DATABASE_URL
 
 # delete_table(DATABASE_URL)
 
-if check_tables(DATABASE_URL, ['videos', 'video_snapshots']) is True:
-    pass
-else:
-    create_tables(DATABASE_URL)
-
 
 @dp.message(Command("start"))
 async def cmd_start(message: types.Message):
@@ -51,13 +46,13 @@ async def handle_text(message: types.Message):
         await message.answer("Я пока не понял запрос и не знаю, что сказать 👀\nПопробуйте спросить ещё раз :)")
 
 
-async def main():
-    global db_pool
-    db_pool = await get_pool(config.DATABASE_URL)
-
-    print("🤖 Бот запущен и работает")
-    await dp.start_polling(bot)
-
-
-if __name__ == "__main__":
-    asyncio.run(main())
+# async def main():
+#     global db_pool
+#     db_pool = await get_pool(config.DATABASE_URL)
+#
+#     print("🤖 Бот запущен и работает")
+#     await dp.start_polling(bot)
+#
+#
+# if __name__ == "__main__":
+#     asyncio.run(main())
