@@ -34,7 +34,7 @@ async def detect_intent(text: str) -> dict:
 Пользовательский вопрос: "{text}"
 """
 
-    response = await client.chat.completions.acreate(
+    response = await client.chat.completions.create(
         model="gpt-3.5-turbo",
         messages=[{"role": "user", "content": prompt}],
         temperature=0
@@ -48,6 +48,4 @@ async def detect_intent(text: str) -> dict:
         intent = {"action": "unknown", "params": {}}
 
     return intent
-
-
 
