@@ -5,6 +5,7 @@ from working_with_database import create_tables, check_tables
 import config
 from aiogram.types import Update
 import state
+from config import WEBHOOK_PATH
 
 
 app = FastAPI()
@@ -21,11 +22,11 @@ async def on_startup():
     print("🤖 Webhook установлен, бот запущен")
 
 
-@app.post(config.WEBHOOK_PATH)
+@app.post(WEBHOOK_PATH)
 async def webhook(request: Request):
     data = await request.json()
     update = Update(**data)
-    await dp.feed_update(bot, update)
+    await dp.feed_webhook_update(bot, update)
     return {"ok": True}
 
 
