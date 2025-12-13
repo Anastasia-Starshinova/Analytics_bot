@@ -127,5 +127,25 @@ async def query_database(pool, action: str, params: dict = None):
         result = await pool.fetchrow(query, start_date, end_date)
         return int(result["total"] or 0)
 
+    elif action == "creator_delta_views_in_time_range":
+        print('elif action == "creator_delta_views_in_time_range":')
+
+        creator_id = params.get("creator_id")
+        date_str = params.get("date")
+        start_time = params.get("start_time")
+        end_time = params.get("end_time")
+
+        if not all([creator_id, date_str, start_time, end_time]):
+            return 0
+
+        date_obj = date.fromisoformat(date_str)
+        query = """SELECT COALESCE(SUM(vs.delta_views_count), 0) AS total FROM video_snapshots vs
+        JOIN videos v ON v.id = vs.video_id WHERE v.creator_id = $1 AND vs.created_at::date = $2 
+        AND vs.created_at::time BETWEEN $3 AND $4"""
+
+        result = await pool.fetchrow(query, creator_id, date_obj, start_time, end_time)
+
+        return int(result["total"] or 0)
+
     else:
         return 0
