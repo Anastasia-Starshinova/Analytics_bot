@@ -132,19 +132,21 @@ async def query_database(pool, action: str, params: dict = None):
 
         creator_id = params.get("creator_id")
         date_str = params.get("date")
-        start_time = params.get("start_time")
-        end_time = params.get("end_time")
+        start_time_str = params.get("start_time")
+        end_time_str = params.get("end_time")
 
-        if not all([creator_id, date_str, start_time, end_time]):
+        if not all([creator_id, date_str, start_time_str, end_time_str]):
             return 0
 
         date_obj = date.fromisoformat(date_str)
-        query = """SELECT COALESCE(SUM(vs.delta_views_count), 0) AS total FROM video_snapshots vs
-        JOIN videos v ON v.id = vs.video_id WHERE v.creator_id = $1 AND vs.created_at::date = $2 
+        start_time_obj = datetime.strptime(start_time_str, "%H:%M").time()
+        end_time_obj = datetime.strptime(end_time_str, "%H:%M").time()
+
+        query = """SELECT COALESCE(SUM(vs.delta_views_count), 0) AS total FROM video_snapshots 
+        vs JOIN videos v ON v.id = vs.video_id WHERE v.creator_id = $1 AND vs.created_at::date = $2 
         AND vs.created_at::time BETWEEN $3 AND $4"""
 
-        result = await pool.fetchrow(query, creator_id, date_obj, start_time, end_time)
-
+        result = await pool.fetchrow(query, creator_id, date_obj, start_time_obj, end_time_obj)
         return int(result["total"] or 0)
 
     else:
