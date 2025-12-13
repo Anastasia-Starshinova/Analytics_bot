@@ -2,11 +2,11 @@ import psycopg2
 import json
 from psycopg2 import sql
 
-keys_videos = ['id', 'creator_id', 'video_created_at', 'views_count', 'likes_count', 'comments_count',
-               'reports_count', 'created_at', 'updated_at']
-keys_video_snapshots = ['id', 'video_id', 'views_count', 'likes_count', 'comments_count', 'reports_count',
-                        'delta_views_count', 'delta_likes_count', 'delta_comments_count', 'delta_reports_count',
-                        'created_at', 'updated_at']
+# keys_videos = ['id', 'creator_id', 'video_created_at', 'views_count', 'likes_count', 'comments_count',
+#                'reports_count', 'created_at', 'updated_at']
+# keys_video_snapshots = ['id', 'video_id', 'views_count', 'likes_count', 'comments_count', 'reports_count',
+#                         'delta_views_count', 'delta_likes_count', 'delta_comments_count', 'delta_reports_count',
+#                         'created_at', 'updated_at']
 
 
 def check_tables(database_url, tables_list):
@@ -79,8 +79,6 @@ def create_tables(database_url):
         print(len(all_data))
 
         for data in all_data:
-            # keys_videos = ['id', 'creator_id', 'video_created_at', 'views_count', 'likes_count', 'comments_count',
-            #                'reports_count', 'created_at', 'updated_at']
             data_id = data.get('id')
             creator_id = data.get('creator_id')
             video_created_at = data.get('video_created_at')

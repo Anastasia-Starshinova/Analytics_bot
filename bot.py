@@ -24,6 +24,12 @@ async def cmd_start(message: types.Message):
     await message.answer("Привет! Я работаю на aiogram + Railway 😊")
 
 
+@dp.message(Command("help"))
+async def cmd_start(message: types.Message):
+    await message.answer("Привет! Этот бот написан в качестве тестового задания и помогает получить данные из "
+                         "базы данных :) Просто спросите то, что вам нужно и бот ответит :)")
+
+
 async def main():
     print("Бот запущен и работает на Railway!")
     await dp.start_polling(bot)
