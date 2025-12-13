@@ -19,12 +19,16 @@ def detect_intent_sync(text: str) -> dict:
 Определи действие пользователя и параметры для запроса к базе.
 
 Верни JSON в формате:
-{{
-    "action": "<тип действия: total_videos, top_likes, videos_by_creator, views_above_threshold, snapshot_max_views, snapshot_by_video>",
-    "params": {{
-        "<имя_параметра>": "<значение>"
-    }}
-}}
+{
+    "action": "<тип действия: total_videos, top_likes, videos_by_creator, views_above_threshold, snapshot_max_views, 
+    snapshot_by_video, sum_views_by_date>",
+    "params": {
+        "date": "YYYY-MM-DD",
+        "creator_id": "<id>",
+        "video_id": "<id>",
+        "threshold": <число>
+    }
+}
 
 Если не можешь понять запрос, верни:
 {{
