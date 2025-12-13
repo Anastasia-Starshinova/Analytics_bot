@@ -44,6 +44,19 @@ async def handle_text(message: types.Message):
     action = intent.get("action")
     params = intent.get("params", {})
 
-    number = await query_database(db_pool, action, params)
-    await message.answer(f"{number}")
+    if action == "unknown" or not action:
+        await message.answer(
+            "Я пока не понял запрос и не знаю, что сказать 👀\nПопробуйте спросить ещё раз :)"
+        )
+        return
+
+    try:
+        number = await query_database(db_pool, action, params)
+        await message.answer(f"{number}")
+
+    except Exception as e:
+        print("Ошибка при работе с базой:", e)
+        await message.answer(
+            "Произошла ошибка при обработке запроса 😢\nПопробуйте ещё раз."
+        )
 

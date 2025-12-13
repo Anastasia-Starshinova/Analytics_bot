@@ -5,20 +5,16 @@ async def get_pool(database_url: str):
     return await asyncpg.create_pool(database_url)
 
 
-# async def get_top_videos(pool, limit: int = 5):
-#     query = """
-#         SELECT id, views_count, likes_count
-#         FROM videos
-#         ORDER BY likes_count DESC
-#         LIMIT $1
-#     """
-#     return await pool.fetch(query, limit)
-
 async def query_database(pool, action: str, params: dict = None):
     params = params or {}
 
     if action == "total_videos":
         query = "SELECT COUNT(*) AS total FROM videos"
+        result = await pool.fetchrow(query)
+        return result["total"]
+
+    elif action == "total_snapshots":
+        query = "SELECT COUNT(*) AS total FROM video_snapshots"
         result = await pool.fetchrow(query)
         return result["total"]
 
@@ -45,6 +41,16 @@ async def query_database(pool, action: str, params: dict = None):
         result = await pool.fetchrow(query, threshold)
         return result["total"]
 
+    elif action == "snapshot_max_views":
+        query = "SELECT MAX(views_count) AS max_views FROM video_snapshots"
+        result = await pool.fetchrow(query)
+        return result["max_views"]
+
+    elif action == "snapshot_by_video":
+        video_id = params.get("video_id")
+        query = "SELECT COUNT(*) AS total FROM video_snapshots WHERE video_id = $1"
+        result = await pool.fetchrow(query, video_id)
+        return result["total"]
+
     else:
         return 0
-
