@@ -88,18 +88,12 @@ async def query_database(pool, action: str, params: dict = None):
 
     elif action == "creator_videos_views_final":
         print('elif action == "creator_videos_views_final":')
-        threshold = int(params.get("threshold", 100000))  # порог можно задать в params
-        creator_id = params.get("creator_id")  # необязательный
-        query = """SELECT COUNT(DISTINCT v.creator_id) AS total FROM videos v WHERE COALESCE(
-        (SELECT MAX(vs.views_count) FROM video_snapshots vs WHERE vs.video_id = v.id), v.views_count) > $1"""
-
-        if creator_id:
-            query += " AND v.creator_id = $2"
-            result = await pool.fetchrow(query, threshold, creator_id)
-
-        else:
-            result = await pool.fetchrow(query, threshold)
+        threshold = int(params.get("threshold", 100000))
+        query = """SELECT COUNT(DISTINCT v.creator_id) AS total FROM videos v JOIN video_snapshots 
+        vs ON vs.video_id = v.id GROUP BY v.id, v.creator_id HAVING MAX(vs.views_count) > $1"""
+        result = await pool.fetchrow(query, threshold)
         return int(result["total"] or 0)
+
 
     elif action == "negative_view_snapshots":
         print('elif action == "negative_view_snapshots":')
