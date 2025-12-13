@@ -13,10 +13,10 @@ def detect_intent_sync(text: str) -> dict:
     """
     prompt = f"""
 Ты - помощник для бота Telegram, который работает с двумя таблицами в PostgreSQL:
-- videos (id, creator_id, video_created_at, views_count, likes_count, comments_count, reports_count, created_at,
+- videos (id, creator_id, video_created_at, views_count, likes_count, comments_count, reports_count, created_at, 
 updated_at)
-- video_snapshots (id, video_id, views_count, likes_count, comments_count, reports_count, delta_views_count, 
-delta_likes_count, delta_comments_count, delta_reports_count, created_at, updated_at)
+- video_snapshots (id, video_id, views_count, likes_count, comments_count, reports_count,
+  delta_views_count, delta_likes_count, delta_comments_count, delta_reports_count, created_at, updated_at)
 
 Твоя задача — определить действие (action) и параметры (params) для запроса к базе данных.
 
@@ -32,28 +32,30 @@ delta_likes_count, delta_comments_count, delta_reports_count, created_at, update
 - sum_views_by_date  
 - creator_videos_views_final  
 
-- **negative_view_snapshots**  
+- negative_view_snapshots  
   Используется, когда пользователь спрашивает:
   - сколько замеров статистики
   - где просмотры уменьшились
   - где число просмотров стало меньше по сравнению с предыдущим замером
   - где delta просмотров отрицательная  
-  ⚠️ ВАЖНО: считается КОЛИЧЕСТВО ЗАМЕРОВ, а не видео.
+  ⚠️ считается КОЛИЧЕСТВО ЗАМЕРОВ
 
-- **sum_views_by_video_publish_date**  
+- sum_views_by_video_publish_date  
   Используется, когда пользователь спрашивает:
   - суммарное количество просмотров всех видео
-  - просмотры всех видео за период публикации
-  - просмотры видео, опубликованных в определённый месяц или период  
-  📌 Суммируется поле `videos.views_count`  
-  📌 Фильтр применяется по `videos.video_created_at`
+  - просмотры видео, опубликованных за месяц или период  
+  📌 Суммируется videos.views_count  
+  📌 Фильтр по videos.video_created_at  
+  📌 Если указан месяц — используй start_date и end_date
   
 ---
 
 Верни JSON в формате:
 {{
-    "action": "<тип действия: total_videos, top_likes, videos_by_creator, views_above_threshold, snapshot_max_views, 
-    snapshot_by_video, sum_views_by_date, creator_videos_views_final>",
+    "action": "<тип действия: total_videos, total_snapshots, top_likes, videos_by_creator,
+               views_above_threshold, snapshot_max_views, snapshot_by_video,
+               sum_views_by_date, sum_views_by_video_publish_date,
+               creator_videos_views_final, negative_view_snapshots>",
     "params": {{
         "date": "YYYY-MM-DD",
         "start_date": "YYYY-MM-DD",
