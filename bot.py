@@ -3,7 +3,7 @@ from aiogram import Bot, Dispatcher, types
 from aiogram.filters import Command
 import config
 from db import get_pool, query_database
-from openai_client import detect_intent, format_answer
+from openai_client import detect_intent
 # import os
 import state
 
@@ -36,27 +36,18 @@ async def cmd_help(message: types.Message):
 @dp.message()
 async def handle_text(message: types.Message):
     db_pool = state.db_pool
+
     intent = await detect_intent(message.text)
 
-    print("Сообщение:", message.text)
+    print("Message:", message.text)
     print("Intent:", intent)
 
     action = intent.get("action")
     params = intent.get("params", {})
 
     if action == "unknown" or not action:
-        await message.answer(
-            "Я пока не понял запрос и не знаю, что сказать 👀\nПопробуйте спросить ещё раз :)"
-        )
+        await message.answer("Я пока не понял запрос 👀")
         return
 
-    try:
-        number = await query_database(db_pool, action, params)
-        await message.answer(f"{number}")
-
-    except Exception as e:
-        print("Ошибка при работе с базой:", e)
-        await message.answer(
-            "Произошла ошибка при обработке запроса 😢\nПопробуйте ещё раз."
-        )
-
+    number = await query_database(db_pool, action, params)
+    await message.answer(f"{number}")
