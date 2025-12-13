@@ -11,17 +11,17 @@ async def query_database(pool, action: str, params: dict = None):
     if action == "total_videos":
         query = "SELECT COUNT(*) AS total FROM videos"
         result = await pool.fetchrow(query)
-        return result["total"]
+        return int(result["total"])
 
     elif action == "total_snapshots":
         query = "SELECT COUNT(*) AS total FROM video_snapshots"
         result = await pool.fetchrow(query)
-        return result["total"]
+        return int(result["total"])
 
     elif action == "top_likes":
         query = "SELECT MAX(likes_count) AS max_likes FROM videos"
         result = await pool.fetchrow(query)
-        return result["max_likes"]
+        return int(result["max_likes"]) if result["max_likes"] is not None else 0
 
     elif action == "videos_by_creator":
         creator_id = params.get("creator_id")
@@ -33,24 +33,24 @@ async def query_database(pool, action: str, params: dict = None):
             WHERE creator_id = $1 AND video_created_at BETWEEN $2 AND $3
         """
         result = await pool.fetchrow(query, creator_id, start_date, end_date)
-        return result["total"]
+        return int(result["total"])
 
     elif action == "views_above_threshold":
-        threshold = params.get("threshold", 100000)
+        threshold = int(params.get("threshold", 100000))
         query = "SELECT COUNT(*) AS total FROM videos WHERE views_count >= $1"
         result = await pool.fetchrow(query, threshold)
-        return result["total"]
+        return int(result["total"])
 
     elif action == "snapshot_max_views":
         query = "SELECT MAX(views_count) AS max_views FROM video_snapshots"
         result = await pool.fetchrow(query)
-        return result["max_views"]
+        return int(result["max_views"]) if result["max_views"] is not None else 0
 
     elif action == "snapshot_by_video":
         video_id = params.get("video_id")
         query = "SELECT COUNT(*) AS total FROM video_snapshots WHERE video_id = $1"
         result = await pool.fetchrow(query, video_id)
-        return result["total"]
+        return int(result["total"])
 
     else:
         return 0
