@@ -25,6 +25,7 @@ async def query_database(pool, action: str, params: dict = None):
         return int(result["max_likes"] or 0)
 
     elif action == "videos_by_creator":
+        print("videos_by_creator", params, params.get("creator_id"))
         creator_id = params.get("creator_id")
         start_date = params.get("start_date")
         end_date = params.get("end_date")
