@@ -63,6 +63,12 @@ updated_at)
   - по дате (video_snapshots.created_at::date)
   - по временному интервалу (created_at::time BETWEEN start_time AND end_time)
 
+⚠️ ОБЯЗАТЕЛЬНО:
+- Если в вопросе указан интервал времени (например 10:00–15:00),
+  ты ОБЯЗАН вернуть параметры start_time и end_time в формате HH:MM
+- Если указана конкретная дата, ты ОБЯЗАН вернуть параметр date в формате YYYY-MM-DD
+- Для действия creator_delta_views_in_time_range все параметры
+  (creator_id, date, start_time, end_time) ОБЯЗАТЕЛЬНЫ
 
 ---
 
