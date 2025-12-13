@@ -102,5 +102,13 @@ async def query_database(pool, action: str, params: dict = None):
         result = await pool.fetchrow(query, creator_id, threshold)
         return int(result["total"] or 0)
 
+    elif action == "negative_view_snapshots":
+        query = """SELECT COUNT(*) AS total FROM (SELECT video_id, views_count, views_count - LAG(views_count) 
+        OVER (PARTITION BY video_id ORDER BY created_at) AS delta FROM video_snapshots) WHERE delta < 0
+        """
+        result = await pool.fetchrow(query)
+        return int(result["total"] or 0)
+
+
     else:
         return 0
