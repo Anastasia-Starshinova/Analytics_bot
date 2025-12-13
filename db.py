@@ -1,5 +1,5 @@
 import asyncpg
-from datetime import datetime
+from datetime import datetime, date
 
 
 async def get_pool(database_url: str):
@@ -25,15 +25,19 @@ async def query_database(pool, action: str, params: dict = None):
         return int(result["max_likes"] or 0)
 
     elif action == "videos_by_creator":
-        print("videos_by_creator", params, params.get("creator_id"))
         creator_id = params.get("creator_id")
         start_date = params.get("start_date")
         end_date = params.get("end_date")
-        query = """
-            SELECT COUNT(*) AS total
-            FROM videos
-            WHERE creator_id = $1 AND video_created_at BETWEEN $2 AND $3
-        """
+
+        if isinstance(start_date, str):
+            start_date = date.fromisoformat(start_date)
+
+        if isinstance(end_date, str):
+            end_date = date.fromisoformat(end_date)
+
+        query = """SELECT COUNT(*) AS total FROM videos WHERE creator_id = $1 
+        AND video_created_at BETWEEN $2 AND $3"""
+
         result = await pool.fetchrow(query, creator_id, start_date, end_date)
         return int(result["total"] or 0)
 
