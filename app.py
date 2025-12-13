@@ -25,7 +25,7 @@ async def on_startup():
 async def webhook(request: Request):
     data = await request.json()
     update = Update(**data)
-    await dp.feed_update(update)
+    await dp.feed_update(bot, update)
     return {"ok": True}
 
 
