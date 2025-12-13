@@ -122,7 +122,7 @@ async def query_database(pool, action: str, params: dict = None):
         if isinstance(end_date, str):
             end_date = date.fromisoformat(end_date)
 
-        query = """SELECT SUM(views_count) AS total FROM videos WHERE video_created_at BETWEEN $1 AND $2"""
+        query = """SELECT SUM(views_count) AS total FROM videos WHERE video_created_at::date BETWEEN $1 AND $2"""
 
         result = await pool.fetchrow(query, start_date, end_date)
         return int(result["total"] or 0)
