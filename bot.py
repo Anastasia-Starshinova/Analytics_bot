@@ -38,6 +38,9 @@ async def handle_text(message: types.Message):
     db_pool = state.db_pool
     intent = await detect_intent(message.text)
 
+    print("Сообщение:", message.text)
+    print("Intent:", intent)
+
     action = intent.get("action")
     params = intent.get("params", {})
 
