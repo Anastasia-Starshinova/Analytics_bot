@@ -47,7 +47,7 @@ async def handle_text(message: types.Message):
         answer = await format_answer(rows)
         await message.answer(answer)
     else:
-        await message.answer("Я пока не понял запрос 😅")
+        await message.answer("Я пока не понял запрос и не знаю, что сказать 😅")
 
 
 async def main():
