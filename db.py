@@ -1,5 +1,5 @@
 import asyncpg
-
+from datetime import datetime
 
 async def get_pool(database_url: str):
     return await asyncpg.create_pool(database_url)
@@ -53,10 +53,14 @@ async def query_database(pool, action: str, params: dict = None):
         return int(result["total"])
 
     elif action == "sum_views_by_date":
-        date = str(params.get("date"))
-        query = """SELECT SUM(views_count) AS total_views FROM videos WHERE DATE(video_created_at) = $1"""
-        result = await pool.fetchrow(query, date)
-        return int(result["total_views"] or 0)
+        date_str = params.get("date")  # "2025-11-28"
+        if not date_str:
+            return 0
+
+        date_obj = datetime.strptime(date_str, "%Y-%m-%d").date()
+        query = "SELECT SUM(views_count) AS total FROM videos WHERE video_created_at = $1"
+        result = await pool.fetchrow(query, date_obj)
+        return int(result["total"] or 0)
 
     else:
         return 0
