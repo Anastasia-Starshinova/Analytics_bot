@@ -2,7 +2,6 @@ import asyncio
 from aiogram import Bot, Dispatcher, types
 from aiogram.filters import Command
 import config
-from working_with_database import create_tables, delete_table, check_tables
 from db import get_pool, get_top_videos
 from openai_client import detect_intent, format_answer
 # import os

@@ -1,5 +1,5 @@
 from fastapi import FastAPI, Request
-from bot import bot, dp, db_pool, DATABASE_URL
+from bot import bot, dp, DATABASE_URL
 from db import get_pool
 from working_with_database import create_tables, check_tables
 import config
