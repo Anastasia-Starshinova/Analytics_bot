@@ -23,7 +23,7 @@ delta_likes_count, delta_comments_count, delta_reports_count, created_at, update
 Верни JSON в формате:
 {{
     "action": "<тип действия: total_videos, top_likes, videos_by_creator, views_above_threshold, snapshot_max_views, 
-    snapshot_by_video, sum_views_by_date>",
+    snapshot_by_video, sum_views_by_date, creator_videos_views_final>",
     "params": {{
         "date": "YYYY-MM-DD",
         "creator_id": "<id>",
@@ -31,6 +31,10 @@ delta_likes_count, delta_comments_count, delta_reports_count, created_at, update
         "threshold": <число>
     }}
 }}
+
+Важно: Если запрос про "итоговую статистику" или "по итоговой статистике" для видео креатора с просмотрами выше порога, 
+используй действие "creator_videos_views_final". Это действие берет максимальное значение views_count из video_snapshots 
+для каждого видео (итоговая статистика).
 
 Если не можешь понять запрос, верни:
 {{

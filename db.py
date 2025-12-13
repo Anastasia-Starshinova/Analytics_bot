@@ -72,5 +72,22 @@ async def query_database(pool, action: str, params: dict = None):
         result = await pool.fetchrow(query, date_obj)
         return int(result["total"] or 0)
 
+    elif action == "creator_videos_views_final":
+        creator_id = params.get("creator_id")
+        threshold = int(params.get("threshold", 10000))
+        # Итоговая статистика = максимальное значение views_count из video_snapshots для каждого видео
+        # Если snapshots нет, используем views_count из videos
+        query = """
+            SELECT COUNT(DISTINCT v.id) AS total
+            FROM videos v
+            WHERE v.creator_id = $1
+            AND COALESCE(
+                (SELECT MAX(vs.views_count) FROM video_snapshots vs WHERE vs.video_id = v.id),
+                v.views_count
+            ) > $2
+        """
+        result = await pool.fetchrow(query, creator_id, threshold)
+        return int(result["total"] or 0)
+
     else:
         return 0
