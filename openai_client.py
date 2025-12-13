@@ -13,8 +13,10 @@ def detect_intent_sync(text: str) -> dict:
     """
     prompt = f"""
 Ты - помощник для бота Telegram, который работает с двумя таблицами в PostgreSQL:
-- videos (id, creator_id, video_created_at, views_count, likes_count, comments_count, reports_count)
-- video_snapshots (id, video_id, snapshot_created_at, views_count, likes_count, comments_count)
+- videos (id, creator_id, video_created_at, views_count, likes_count, comments_count, reports_count, created_at,
+updated_at)
+- video_snapshots (id, video_id, views_count, likes_count, comments_count, reports_count, delta_views_count, 
+delta_likes_count, delta_comments_count, delta_reports_count, created_at, updated_at)
 
 Определи действие пользователя и параметры для запроса к базе.
 

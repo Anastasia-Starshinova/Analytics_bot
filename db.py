@@ -58,11 +58,7 @@ async def query_database(pool, action: str, params: dict = None):
         if not date_str:
             return 0
         date_obj = datetime.strptime(date_str, "%Y-%m-%d").date()
-        query = """
-            SELECT SUM(views_count) AS total
-            FROM video_snapshots
-            WHERE snapshot_created_at = $1
-        """
+        query = """SELECT SUM(views_count) AS total FROM video_snapshots WHERE created_at::date = $1"""
         result = await pool.fetchrow(query, date_obj)
         return int(result["total"] or 0)
 
@@ -71,12 +67,8 @@ async def query_database(pool, action: str, params: dict = None):
         if not date_str:
             return 0
         date_obj = datetime.strptime(date_str, "%Y-%m-%d").date()
-        query = """
-            SELECT COUNT(DISTINCT video_id) AS total
-            FROM video_snapshots
-            WHERE snapshot_created_at = $1
-              AND views_count > 0
-        """
+        query = """SELECT COUNT(DISTINCT video_id) AS total FROM video_snapshots WHERE created_at::date = $1
+        AND views_count > 0"""
         result = await pool.fetchrow(query, date_obj)
         return int(result["total"] or 0)
 
